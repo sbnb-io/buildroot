@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-TAILSCALE_VERSION = 1.78.1
+TAILSCALE_VERSION = 1.94.2
 TAILSCALE_SITE = $(call github,tailscale,tailscale,v$(TAILSCALE_VERSION))
 TAILSCALE_LICENSE = BSD-3-Clause
 TAILSCALE_LICENSE_FILES = LICENSE
@@ -14,6 +14,9 @@ TAILSCALE_BUILD_TARGETS = cmd/tailscale cmd/tailscaled
 TAILSCALE_LDFLAGS = \
 	-X tailscale.com/version.longStamp=$(TAILSCALE_VERSION) \
 	-X tailscale.com/version.shortStamp=$(TAILSCALE_VERSION)
+# Use Go module proxy because a transitive dependency (tdakkota/asciicheck)
+# has its GitHub repo deleted; proxy.golang.org still serves cached copies.
+TAILSCALE_GO_ENV = GOPROXY=https://proxy.golang.org,direct
 
 define TAILSCALE_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 0644 $(@D)/cmd/tailscaled/tailscaled.defaults \
